@@ -1,0 +1,34 @@
+application:
+  topic:
+    listener1: topic-listener1
+    listener2: topic-listener2
+    listener3: topic-listener3
+    listener4: topic-listener4
+  kafka:
+    concurrency:
+      threads: 4
+
+server:
+  port: 8088
+
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: com.kafka.multiplelisteners.EventDeserializer
+    producer:
+      bootstrap-servers: 127.0.0.1:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: com.kafka.multiplelisteners.EventSerializer
+  datasource:
+    #driverClassName: org.h2.Driver
+    #url: jdbc:h2:mem:myDb;DB_CLOSE_DELAY=-1
+    driver-classe-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/camel?allowPublicKeyRetrieval=true&autoReconnect=true
+    username: root
+    password: mdymen_pass
+  jpa:
+    show-sql: true
+  main:
+    allow-circular-references: true

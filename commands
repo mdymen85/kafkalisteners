@@ -1,0 +1,17 @@
+docker exec broker kafka-topics --bootstrap-server broker:9092 --create --replication-factor 1 --partitions 4 --topic topic-listener1
+docker exec broker kafka-topics --bootstrap-server broker:9092 --create --replication-factor 1 --partitions 4 --topic topic-listener2
+docker exec broker kafka-topics --bootstrap-server broker:9092 --create --replication-factor 1 --partitions 4 --topic topic-listener3
+docker exec broker kafka-topics --bootstrap-server broker:9092 --create --replication-factor 1 --partitions 4 --topic topic-listener4
+
+this is my first kafka message
+hello world!
+this is my third kafka message. Im on a roll
+
+docker exec --interactive --tty broker kafka-console-consumer --bootstrap-server broker:9092 --topic quickstart --from-beginning
+
+bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 3 --topic pedido-criado
+bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 2 --partitions 3 --topic pedido-criado
+
+kafka-console-consumer --bootstrap-server localhost:9092 --topic topic1 --partition 1 --from-beginning
+
+docker exec --interactive --tty broker kafka-console-producer --bootstrap-server broker:9092 --topic brpayroll.fct.esocial-input.0
