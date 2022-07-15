@@ -2,14 +2,13 @@ package com.kafka.multiplelisteners;
 
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.kafka.annotation.EnableKafka;
 
 import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name = "camel_table1")
-public class EventConsumer {
+@Table(name = "camel_table2")
+public class EventConsumer2 {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,12 +16,12 @@ public class EventConsumer {
     private String uuid;
     private String number;
 
-    public EventConsumer() {
+    public EventConsumer2() {
 
     }
 
     @Builder
-    public EventConsumer(Long id, String uuid, String number) {
+    public EventConsumer2(Long id, String uuid, String number) {
         this.id = id;
         this.uuid = uuid;
         this.number = number;

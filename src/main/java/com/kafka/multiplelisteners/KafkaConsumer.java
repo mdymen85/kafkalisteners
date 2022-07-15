@@ -45,4 +45,12 @@ public class KafkaConsumer {
         eventRepository.save(eventConsumer);
     }
 
+    @KafkaListener(topics = "topic-camel-1", groupId = "g1")
+    public void consumer5(EventConsumer eventConsumer) {
+
+        log.info("listener 4, message {}", eventConsumer);
+
+   //     eventRepository.save(eventConsumer);
+    }
+
 }
