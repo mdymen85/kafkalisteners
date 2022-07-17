@@ -2,13 +2,12 @@ package com.kafka.multiplelisteners;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Random;
 
 @RestController
 @RequestMapping("/api")
@@ -16,32 +15,17 @@ import java.util.Random;
 @Slf4j
 public class EventController {
 
+    @Value("${application.topic.listener1}")
+    private String topic;
+
     private final KafkaTemplate<String, EventConsumer> kafkaTemplate;
-    private final KafkaTemplate<String, EventConsumer2> kafkaTemplate2;
 
     @RequestMapping(path = "/v1/process", method = RequestMethod.POST)
     public void process(@RequestBody EventConsumer eventConsumer) {
 
-        int random = new Random().nextInt(1,4);
-
-        var topic = "topic-listener" + random;
-
         log.info("sending message {} to topic {}", eventConsumer, topic);
 
         kafkaTemplate.send(topic, eventConsumer);
-
-    }
-
-    @RequestMapping(path = "/v1/process2", method = RequestMethod.POST)
-    public void process2(@RequestBody EventConsumer2 eventConsumer2) {
-
-        int random = new Random().nextInt(1,4);
-
-        var topic = "topic-listener" + random;
-
-        log.info("sending message {} to topic {}", eventConsumer2, topic);
-
-        kafkaTemplate2.send(topic, eventConsumer2);
 
     }
 
