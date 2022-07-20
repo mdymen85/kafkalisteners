@@ -7,9 +7,21 @@ application:
   kafka:
     concurrency:
       threads: 4
+  processor-camel2:
+    enabled: false
+  processor-camel3:
+    enabled: false
+  processor-camel4:
+    enabled: false
+  consumer2:
+    enabled: false
+  consumer3:
+    enabled: false
+  consumer4:
+    enabled: false
 
 server:
-  port: 8088
+  port: 8089
 
 spring:
   kafka:

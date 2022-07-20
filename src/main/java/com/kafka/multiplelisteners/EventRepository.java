@@ -41,4 +41,8 @@ public interface EventRepository extends CrudRepository<EventConsumer, Long> {
     @Query(value = "insert into outbox_camel_table4(uuid, number) values(:uuid, :number)", nativeQuery = true)
     void insert_outbox4(@Param("uuid") String uuid, @Param("number") String number);
 
+    @Modifying
+    @Query(value = "insert into camel_result_table1(uuid, number) values(:uuid, :number)", nativeQuery = true)
+    void camel_result_table1(@Param("uuid") String uuid, @Param("number") String number);
+
 }

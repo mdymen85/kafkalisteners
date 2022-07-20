@@ -14,13 +14,13 @@ public class ApacheProcessorCamel1 extends RouteBuilder {
     public void configure() throws Exception {
 
         from("timer:foo?period=1000")
-                .setBody(constant("select * from camel_table1"))
+                .setBody(constant("select * from outbox_camel_table1 limit 100"))
                 .to("jdbc:datasource")
                 .split(body()).streaming()
                 .process(new ProcessQueryCamel1())
-                .log("log ${in.headers.uuid}")
-                .to("sql:delete from camel_table1 where uuid = :#uuid")
+//                .log("log apache 1 ${in.headers.uuid}")
                 .to("kafka:topic-camel-1?brokers=localhost:9092&keySerializer=org.apache.kafka.common.serialization.StringSerializer&valueSerializer=com.kafka.multiplelisteners.EventSerializer")
+                .to("sql:delete from outbox_camel_table1 where uuid = :#uuid")
                 .end();
 
     }

@@ -4,28 +4,31 @@ import com.kafka.multiplelisteners.EventConsumer;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashMap;
 
+@ConditionalOnProperty(name = "application.processor-camel2.enabled", havingValue = "true", matchIfMissing = true)
 @Component
 public class ApacheProcessorCamel2 extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
         from("timer:foo?period=1000")
-                .setBody(constant("select * from camel_table2"))
+                .setBody(constant("select * from outbox_camel_table2 limit 1000"))
                 .to("jdbc:datasource")
                 .split(body()).streaming()
                 .process(new ProcessQueryCamel2())
-                .log("log ${in.headers.uuid}")
-                .to("sql:delete from camel_table2 where uuid = :#uuid")
-                .to("kafka:topic-camel-1?brokers=localhost:9092&keySerializer=org.apache.kafka.common.serialization.StringSerializer&valueSerializer=com.kafka.multiplelisteners.EventSerializer")
+                .log("log apache 2 ${in.headers.uuid}")
+                .to("sql:delete from outbox_camel_table2 where uuid = :#uuid")
+                .to("kafka:topic-camel-2?brokers=localhost:9092&keySerializer=org.apache.kafka.common.serialization.StringSerializer&valueSerializer=com.kafka.multiplelisteners.EventSerializer")
                 .end();
 
     }
 }
 
+@ConditionalOnProperty(name = "application.processor-camel2.enabled", havingValue = "true", matchIfMissing = true)
 class ProcessQueryCamel2 implements Processor {
 
     @Override
