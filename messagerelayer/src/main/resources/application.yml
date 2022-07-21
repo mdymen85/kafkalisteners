@@ -1,0 +1,22 @@
+spring:
+  kafka:
+    producer:
+      bootstrap-servers: 127.0.0.1:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: com.kafka.messagerelayer.EventoSerializer
+
+  datasource:
+    #driverClassName: org.h2.Driver
+    #url: jdbc:h2:mem:myDb;DB_CLOSE_DELAY=-1
+    driver-classe-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/camel?allowPublicKeyRetrieval=true&autoReconnect=true
+    username: root
+    password: mdymen_pass
+  jpa:
+    show-sql: true
+  main:
+    allow-circular-references: true
+server:
+  port: 8091
+
+

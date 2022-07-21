@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,7 @@ public class Consumer1 {
 
     private final EventRepository eventRepository;
 
+    @RetryableTopic
     @KafkaListener(topics = "${application.topic.listener1}", groupId = "g1")
     public void consumer1(EventConsumer eventConsumer) {
 
