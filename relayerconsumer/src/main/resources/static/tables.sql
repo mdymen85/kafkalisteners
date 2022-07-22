@@ -9,8 +9,10 @@ create table relayer_info
 -- auto-generated definition
 create table relayer_outbox
 (
-    id bigint auto_increment primary key,
-    headers text null,
-    payload text not null
+    id      bigint auto_increment
+        primary key,
+    headers text         null,
+    payload text         not null,
+    uuid    varchar(100) not null
 );
 
