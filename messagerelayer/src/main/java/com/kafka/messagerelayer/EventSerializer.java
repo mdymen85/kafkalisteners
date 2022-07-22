@@ -1,14 +1,17 @@
 package com.kafka.messagerelayer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.Serializer;
 
-public class EventSerializer implements Serializer<EventProducer> {
+public class EventSerializer implements Serializer<ProducerRecord> {
 
     @Override
-    public byte[] serialize(String s, EventProducer event) {
+    public byte[] serialize(String s, ProducerRecord event) {
         byte[] retVal = null;
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         try {
             retVal = objectMapper.writeValueAsString(event).getBytes();
         } catch (Exception e) {

@@ -11,6 +11,8 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -30,15 +32,33 @@ public class KafkaConsumer {
         try {
 
             var relayerInfo = record.value();
-            var headers = record.headers().toString();
+            var itHeaders = record.headers().iterator();
+
+            StringBuilder headers = new StringBuilder();
+            int i = 0;
+            while (itHeaders.hasNext()) {
+                var header = itHeaders.next();
+
+                var key = header.key();
+                var value = new String(header.value());
+
+                if (i != 0) {
+                    headers.append(",");
+                }
+
+                headers.append(key + "=" + value);
+
+            }
+
 
             log.info("consumer is reading message {} from topic {}", relayerInfo, record.topic());
 
 
             var relayerOutbox = RelayerOutbox
                     .builder()
-                    .headers(headers)
+                    .headers(headers.toString())
                     .payload(mapper.writeValueAsString(relayerInfo))
+                    .uuid(relayerInfo.getUuid())
                     .build();
 
             relayerInfoRepository.save(relayerInfo);
