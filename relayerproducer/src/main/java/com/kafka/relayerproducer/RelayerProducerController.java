@@ -33,12 +33,7 @@ public class RelayerProducerController {
 
         log.info("sending message {} to topic {}", eventConsumer, topic);
 
-        var currentTraceId = tracer.currentSpan().context().traceId();
-
-        Header traceid = new RecordHeader("traceId", currentTraceId.getBytes());
-        var record = new ProducerRecord<String, EventProducer>(topic, null, null, null, eventConsumer, List.of(traceid));
-
-        kafkaTemplate.send(record);
+        kafkaTemplate.send(topic, eventConsumer);
 
     }
 

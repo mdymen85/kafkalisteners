@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.common.header.Header;
+import org.apache.kafka.common.header.Headers;
+import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.retry.annotation.Backoff;
@@ -12,6 +15,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -22,6 +27,7 @@ public class KafkaConsumer {
     private final RelayerOutboxRepository relayerOutboxRepository;
     private final RelayerInfoRepository relayerInfoRepository;
     private final ObjectMapper mapper;
+    private final Tracer tracer;
 
     @RetryableTopic(
             attempts = "3",
@@ -32,33 +38,17 @@ public class KafkaConsumer {
         try {
 
             var relayerInfo = record.value();
-            var itHeaders = record.headers().iterator();
+            var headers = this.constructHeaders(record.headers());
 
-            StringBuilder headers = new StringBuilder();
-            int i = 0;
-            while (itHeaders.hasNext()) {
-                var header = itHeaders.next();
-
-                var key = header.key();
-                var value = new String(header.value());
-
-                if (i != 0) {
-                    headers.append(",");
-                }
-
-                headers.append(key + "=" + value);
-
-            }
-
-
-            log.info("consumer is reading message {} from topic {}", relayerInfo, record.topic());
+            log.info("Headers {}", headers);
+            log.info("Consumer is reading message {} from topic {}", relayerInfo, record.topic());
 
 
             var relayerOutbox = RelayerOutbox
                     .builder()
-                    .headers(headers.toString())
+                    .headers(headers)
                     .payload(mapper.writeValueAsString(relayerInfo))
-                    .uuid(relayerInfo.getUuid())
+                    .uuid(tracer.currentSpan().context().traceId())
                     .build();
 
             relayerInfoRepository.save(relayerInfo);
@@ -68,6 +58,22 @@ public class KafkaConsumer {
             e.printStackTrace();
         }
 
+    }
+
+    private String constructHeaders(Headers headers) {
+        final Map<String, String> attributes = new HashMap<>();
+        StringBuilder strHeaders = new StringBuilder();
+        int i = 0;
+        for (final Header header : headers) {
+            if (i != 0) {
+                strHeaders.append(",");
+            }
+            strHeaders.append(header.key())
+                    .append("=")
+                    .append(header.value());
+            i++;
+        }
+        return strHeaders.toString();
     }
 
 }

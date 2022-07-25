@@ -1,4 +1,4 @@
-package com.kafka.relayerconsumer;
+package com.kafka.outboxconsumer;
 
 import lombok.Builder;
 import lombok.Data;
@@ -9,8 +9,8 @@ import java.time.Instant;
 
 @Data
 @Entity
-@Table(name = "relayer_info")
-public class RelayerInfo {
+@Table(name = "destiny_message")
+public class DestinyMessage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,12 +21,12 @@ public class RelayerInfo {
     @CreationTimestamp
     private Instant created;
 
-    public RelayerInfo() {
+    public DestinyMessage() {
 
     }
 
     @Builder
-    public RelayerInfo(String uuid, String name) {
+    public DestinyMessage(String uuid, String name) {
         this.uuid = uuid;
         this.name = name;
     }

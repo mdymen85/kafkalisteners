@@ -1,20 +1,18 @@
-package com.kafka.relayerconsumer;
+package com.kafka.outboxconsumer;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.Deserializer;
 
-public class EventDeserializer implements Deserializer<RelayerInfo> {
+public class EventDeserializer implements Deserializer<DestinyMessage> {
 
     @Override
-    public RelayerInfo deserialize(String s, byte[] bytes) {
+    public DestinyMessage deserialize(String s, byte[] bytes) {
         ObjectMapper mapper = new ObjectMapper()
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        RelayerInfo event = null;
+        DestinyMessage event = null;
         try {
-            event = mapper.readValue(bytes, RelayerInfo.class);
+            event = mapper.readValue(bytes, DestinyMessage.class);
         } catch (Exception e) {
             e.printStackTrace();
         }

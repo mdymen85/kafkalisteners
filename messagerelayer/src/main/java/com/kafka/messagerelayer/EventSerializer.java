@@ -13,7 +13,7 @@ public class EventSerializer implements Serializer<ProducerRecord> {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         try {
-            retVal = objectMapper.writeValueAsString(event).getBytes();
+            retVal = objectMapper.writeValueAsString(event.value()).getBytes();
         } catch (Exception e) {
             e.printStackTrace();
         }

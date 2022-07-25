@@ -1,14 +1,14 @@
 server:
-  port: 8090
+  port: 8092
 
 spring:
   kafka:
-    bootstrap-servers: ${BOOSTRAP_SERVER:localhost:9092}
+    bootstrap-servers: ${BOOTSTRAP_SERVER:localhost:9092}
     consumer:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: com.kafka.relayerconsumer.EventDeserializer
-    topic: ${TOPIC:relayer-topic}
-    consumer-group: ${GROUP:group1}
+      value-deserializer: com.kafka.outboxconsumer.EventDeserializer
+    topic: ${TOPIC:camel-relayer-topic}
+    consumer-group: group1
 
   datasource:
     driver-classe-name: com.mysql.jdbc.Driver
@@ -19,5 +19,6 @@ spring:
     show-sql: true
   main:
     allow-circular-references: true
+
   application:
-    name: relayer-consumer
+    name: outbox-consumer
