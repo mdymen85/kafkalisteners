@@ -37,7 +37,7 @@ public class ApacheProcessorCamel1 extends RouteBuilder {
                 .setBody(constant("select * from relayer_outbox limit 100"))
                 .to("jdbc:datasource")
                 .split(body()).streaming().stopOnException()
-                .process(new ProcessQueryCamel1(mapper, tracer))
+                .process(new ProcessQueryCamel1(mapper, tracer, topic))
                 .log("Message relayer 1 with traceId : ${in.headers.traceId}")
                 .to("sql:delete from relayer_outbox where uuid = :#traceId")
                 .to("kafka:"+topic+"?brokers=localhost:9092&keySerializer=org.apache.kafka.common.serialization.StringSerializer&valueSerializer=com.kafka.messagerelayer.EventSerializer")
@@ -51,6 +51,7 @@ class ProcessQueryCamel1 implements Processor {
 
     private final ObjectMapper mapper;
     private final Tracer tracer;
+    private final String topic;
 
     @Override
     public void process(Exchange exchange) throws Exception {
@@ -80,7 +81,7 @@ class ProcessQueryCamel1 implements Processor {
 
         log.info("headers list {}", headersList);
 
-        var record = new ProducerRecord<String, EventProducer>("camel-relayer-topic", null, null, eventProducer, headersList);
+        var record = new ProducerRecord<String, EventProducer>(topic, null, null, eventProducer, headersList);
 
         exchange.getIn().setBody(record);
 
