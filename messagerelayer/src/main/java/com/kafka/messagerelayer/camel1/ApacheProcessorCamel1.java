@@ -10,6 +10,7 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.internals.RecordHeader;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,9 @@ public class ApacheProcessorCamel1 extends RouteBuilder {
     private final ObjectMapper mapper;
     private final Tracer tracer;
 
+    @Value("${spring.kafka.topic:camel-relayer-topic}")
+    private String topic;
+
     @Override
     public void configure() throws Exception {
 
@@ -36,9 +40,8 @@ public class ApacheProcessorCamel1 extends RouteBuilder {
                 .process(new ProcessQueryCamel1(mapper, tracer))
                 .log("Message relayer 1 with traceId : ${in.headers.traceId}")
                 .to("sql:delete from relayer_outbox where uuid = :#traceId")
-                .to("kafka:camel-relayer-topic?brokers=localhost:9092&keySerializer=org.apache.kafka.common.serialization.StringSerializer&valueSerializer=com.kafka.messagerelayer.EventSerializer")
+                .to("kafka:"+topic+"?brokers=localhost:9092&keySerializer=org.apache.kafka.common.serialization.StringSerializer&valueSerializer=com.kafka.messagerelayer.EventSerializer")
                 .end();
-
     }
 }
 
