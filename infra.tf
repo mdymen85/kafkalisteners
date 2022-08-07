@@ -128,7 +128,7 @@ locals {
 
      ec2_instances = [
        {
-            name = "server1",
+            name = "relayerproducer",
             ip_address = "10.0.0.4",
             depends_on = [],
             script = <<-EOF
@@ -137,7 +137,37 @@ locals {
                         wget https://kafkalisteners.s3.amazonaws.com/relayerproducer-0.0.1-SNAPSHOT.jar 
                         java -Dserver.port=8080 -jar relayerproducer-0.0.1-SNAPSHOT.jar                      
                      EOF      
-       }
+       },
+       {
+            name = "relayerconsumer",
+            ip_address = "10.0.0.5",
+            depends_on = [],
+            script = <<-EOF
+                        #!/bin/bash
+                        sudo apt-get update 
+                        wget https://kafkalisteners.s3.amazonaws.com/relayerconsumer-0.0.1-SNAPSHOT.jar                     
+                     EOF      
+       },
+       {
+            name = "messagerelayer",
+            ip_address = "10.0.0.6",
+            depends_on = [],
+            script = <<-EOF
+                        #!/bin/bash
+                        sudo apt-get update 
+                        wget https://kafkalisteners.s3.amazonaws.com/messagerelayer-0.0.1-SNAPSHOT.jar                  
+                     EOF      
+       },         
+       {
+            name = "outboxconsumer",
+            ip_address = "10.0.0.7",
+            depends_on = [],
+            script = <<-EOF
+                        #!/bin/bash
+                        sudo apt-get update 
+                        wget https://kafkalisteners.s3.amazonaws.com/outboxconsumer-0.0.1-SNAPSHOT.jar                  
+                     EOF      
+       } 
      ]
 
 }

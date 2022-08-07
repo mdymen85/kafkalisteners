@@ -30,6 +30,9 @@ public class ApacheProcessorCamel1 extends RouteBuilder {
     @Value("${spring.kafka.topic:camel-relayer-topic}")
     private String topic;
 
+    @Value("${spring.kafka.producer.bootstrap-servers:localhost:9092}")
+    private String bootstrapServer;
+
     @Override
     public void configure() throws Exception {
 
@@ -40,7 +43,7 @@ public class ApacheProcessorCamel1 extends RouteBuilder {
                 .process(new ProcessQueryCamel1(mapper, tracer, topic))
                 .log("Message relayer 1 with traceId : ${in.headers.traceId}")
                 .to("sql:delete from relayer_outbox where uuid = :#traceId")
-                .to("kafka:"+topic+"?brokers=localhost:9092&keySerializer=org.apache.kafka.common.serialization.StringSerializer&valueSerializer=com.kafka.messagerelayer.EventSerializer")
+                .to("kafka:"+topic+"?brokers=" + bootstrapServer + "&keySerializer=org.apache.kafka.common.serialization.StringSerializer&valueSerializer=com.kafka.messagerelayer.EventSerializer")
                 .end();
     }
 }

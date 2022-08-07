@@ -21,6 +21,9 @@ public class KafkaConfig {
     @Value("${application.kafka.concurrency.threads:2}")
     private Integer threads;
 
+    @Value("${spring.kafka.bootstrap-server:localhost:9092}")
+    private String bootstrapServer;
+
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, String>
     filterKafkaListenerContainerFactory() {
@@ -35,7 +38,7 @@ public class KafkaConfig {
     public ConsumerFactory<String, String> consumerFactory()
     {
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "listener");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, EventDeserializer.class);

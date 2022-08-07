@@ -34,14 +34,14 @@
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
     &quot;uuid&quot;: &quot;${uuid}&quot;,&#xd;
-    &quot;number&quot;: &quot;${randomInt}&quot;&#xd;
+    &quot;name&quot;: &quot;${randomInt}&quot;&#xd;
 }</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">localhost</stringProp>
-          <stringProp name="HTTPSampler.port">8089</stringProp>
+          <stringProp name="HTTPSampler.domain">18.209.102.158</stringProp>
+          <stringProp name="HTTPSampler.port">8080</stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
           <stringProp name="HTTPSampler.path">/api/v1/process</stringProp>
